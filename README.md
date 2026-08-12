@@ -134,15 +134,16 @@ Add `CustomFolderStyles.json` and the `icon` folder to version control if the st
 
 ### Style Manager Window
 
-![Style Manager Window](screenshots/style-manager-window.png)
+<img src="Screenshot 2026-08-12 171345.png" >
 
 ### Alt Folder Style Popup
 
-![Alt Folder Style Popup](screenshots/alt-style-popup.png)
+<img src="Screenshot 2026-08-12 171336.png" 
 
 ### Customized Folders in the Project Window
 
-![Customized Folders in the Project Window](screenshots/project-window-folders.png)
+<img src="Screenshot 2026-08-12 171321.png" >
+<img src="Screenshot 2026-08-12 172514.png" >
 
 ## File Structure
 
