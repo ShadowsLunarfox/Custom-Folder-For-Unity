@@ -174,4 +174,4 @@ Assets/
 
 ## License
 
-Add the repository's license information here.
+GPL-3.0 license
