@@ -138,11 +138,12 @@ Add `CustomFolderStyles.json` and the `icon` folder to version control if the st
 
 ### Alt Folder Style Popup
 
-<img src="Screenshot 2026-08-12 171336.png" 
+<img src="Screenshot 2026-08-12 171336.png" >
 
 ### Customized Folders in the Project Window
 
 <img src="Screenshot 2026-08-12 171321.png" >
+
 <img src="Screenshot 2026-08-12 172514.png" >
 
 ## File Structure
