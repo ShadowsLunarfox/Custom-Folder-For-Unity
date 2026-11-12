@@ -12,12 +12,12 @@ internal static class CustomFolderProjectView
     // Draws custom folder visuals and bridges Project window input to the popup.
     private const string MenuRoot = "Assets/Custom Folder";
     private const double AltOpenCooldown = 0.35d;
-    private const float ListNameHorizontalOffset = -2f;
     private const float GridBackgroundHorizontalPadding = 8f;
     private static readonly Texture2D FolderIcon = EditorGUIUtility.IconContent("Folder Icon").image as Texture2D;
     private static GUIStyle nameIconLabelStyle;
     private static GUIStyle nameListLabelStyle;
     private static GUIStyle listSelectionStyle;
+    private static GUIStyle gridSelectionStyle;
     private static double lastAltOpenTime;
     private static bool pendingPopupOpen;
     private static string[] pendingPopupFolderGuids;
@@ -250,6 +250,8 @@ internal static class CustomFolderProjectView
         bool showFolderColor = database.ShowFolderColor && style.HasColor;
         bool showBackgroundColor = database.ShowBackgroundColor && style.HasBackgroundColor;
         bool showNameColor = database.ShowNameColor && style.HasNameColor;
+        bool hasFocus = EditorWindow.focusedWindow != null
+            && EditorWindow.focusedWindow.GetType().FullName == "UnityEditor.ProjectBrowser";
 
         if (showBackgroundColor)
         {
@@ -260,16 +262,18 @@ internal static class CustomFolderProjectView
         bool hasCustomIcon = icon != null || (showFolderColor && FolderIcon != null);
         if (hasCustomIcon)
         {
-            DrawIconCover(selectionRect, iconMode, showBackgroundColor, style.BackgroundColor, isSelected);
+            DrawIconCover(selectionRect, iconMode, showBackgroundColor, style.BackgroundColor, isSelected, hasFocus);
         }
 
         if (icon != null)
         {
-            DrawIcon(selectionRect, icon, Color.white, iconMode);
+            DrawIcon(selectionRect, icon, Color.white, iconMode, isSelected);
         }
         else if (showFolderColor && FolderIcon != null)
         {
-            DrawTintedUnityFolderIcon(selectionRect, style.Color, iconMode);
+            Color iconTint = style.Color;
+            iconTint.a = 1f;
+            DrawIcon(selectionRect, FolderIcon, iconTint, iconMode, isSelected);
         }
 
         if (showBackgroundColor)
@@ -279,7 +283,7 @@ internal static class CustomFolderProjectView
 
         if (showNameColor)
         {
-            DrawName(selectionRect, guid, style.NameColor, iconMode, showBackgroundColor, style.BackgroundColor, isSelected);
+            DrawName(selectionRect, guid, style.NameColor, iconMode, showBackgroundColor, style.BackgroundColor, isSelected, hasFocus);
         }
     }
 
@@ -443,55 +447,36 @@ internal static class CustomFolderProjectView
             Mathf.Max(18f, selectionRect.height + 10f));
     }
 
-    private static void DrawIcon(Rect selectionRect, Texture2D icon, Color tint, bool iconMode)
+    private static void DrawIcon(Rect selectionRect, Texture2D icon, Color tint, bool iconMode, bool isSelected)
     {
-        Rect iconRect;
-        if (iconMode)
+        if (iconMode && isSelected)
         {
-            float size = GetGridIconSize(selectionRect);
-            iconRect = new Rect(
-                selectionRect.x + (selectionRect.width - size) * 0.5f,
-                selectionRect.y + 5f,
-                size,
-                size);
-        }
-        else
-        {
-            float size = Mathf.Min(16f, selectionRect.height - 2f);
-            iconRect = new Rect(selectionRect.x, selectionRect.y, size, selectionRect.height);
+            // Unity tints selected grid icons; selection backgrounds belong to
+            // their labels, not to a rectangular block behind the image.
+            tint *= new Color(0.85f, 0.9f, 1f, 1f);
         }
 
-        GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit, true, 0f, tint, 0f, 0f);
+        GUI.DrawTexture(GetIconRect(selectionRect, iconMode), icon, ScaleMode.ScaleToFit, true, 0f, tint, 0f, 0f);
     }
 
-    private static void DrawIconCover(Rect selectionRect, bool iconMode, bool hasBackgroundColor, Color backgroundColor, bool isSelected)
+    private static void DrawIconCover(Rect selectionRect, bool iconMode, bool hasBackgroundColor, Color backgroundColor, bool isSelected, bool hasFocus)
     {
         Rect iconRect = GetIconRect(selectionRect, iconMode);
-        if (!iconMode)
-        {
-            iconRect.width = 16f;
-        }
-
-        DrawCoverBackground(iconRect, hasBackgroundColor, backgroundColor, isSelected, iconMode);
+        DrawCoverBackground(iconRect, hasBackgroundColor, backgroundColor, isSelected && !iconMode, iconMode, hasFocus);
     }
 
-    private static void DrawCoverBackground(Rect rect, bool hasBackgroundColor, Color backgroundColor, bool isSelected, bool iconMode)
+    private static void DrawCoverBackground(Rect rect, bool hasBackgroundColor, Color backgroundColor, bool isSelected, bool iconMode, bool hasFocus)
     {
+        // Selection styles can be translucent. Always erase the native icon or
+        // text first so it cannot show through transparent replacement pixels.
+        EditorGUI.DrawRect(rect, GetProjectViewBackgroundColor());
+
         if (isSelected)
         {
-            if (!iconMode)
-            {
-                GetListSelectionStyle().Draw(rect, GUIContent.none, false, false, true, true);
-            }
-            else
-            {
-                EditorGUI.DrawRect(rect, GUI.skin.settings.selectionColor);
-            }
-
+            GUIStyle selectionStyle = iconMode ? GetGridSelectionStyle() : GetListSelectionStyle();
+            selectionStyle.Draw(rect, GUIContent.none, false, false, true, hasFocus);
             return;
         }
-
-        EditorGUI.DrawRect(rect, GetProjectViewBackgroundColor());
 
         if (hasBackgroundColor)
         {
@@ -501,39 +486,25 @@ internal static class CustomFolderProjectView
         }
     }
 
-    private static void DrawTintedUnityFolderIcon(Rect selectionRect, Color color, bool iconMode)
-    {
-        Rect iconRect = GetIconRect(selectionRect, iconMode);
-
-        Color iconTint = color;
-        iconTint.a = 1f;
-        GUI.DrawTexture(iconRect, FolderIcon, ScaleMode.ScaleToFit, true, 0f, iconTint, 0f, 0f);
-    }
-
     private static Rect GetIconRect(Rect selectionRect, bool iconMode)
     {
         // Match Unity's list/grid icon bounds so covers and popup anchors use the
         // same visual rectangle as the folder icon itself.
         if (iconMode)
         {
-            float size = GetGridIconSize(selectionRect);
+            // ObjectListArea reserves only the native grid label height. An
+            // inset cover leaves the original folder visible around its edges.
             return new Rect(
-                selectionRect.x + (selectionRect.width - size) * 0.5f,
-                selectionRect.y + 5f,
-                size,
-                size);
+                selectionRect.x,
+                selectionRect.y,
+                selectionRect.width,
+                Mathf.Max(1f, selectionRect.height - GetNameLabelStyle(true).fixedHeight));
         }
 
-        return new Rect(selectionRect.x, selectionRect.y, 16f, selectionRect.height);
+        return new Rect(selectionRect.x + GetNameLabelStyle(false).margin.left, selectionRect.y, 16f, selectionRect.height);
     }
 
-    private static float GetGridIconSize(Rect selectionRect)
-    {
-        float availableSize = Mathf.Min(selectionRect.width - 12f, selectionRect.height - 22f);
-        return Mathf.Max(24f, availableSize);
-    }
-
-    private static void DrawName(Rect selectionRect, string guid, Color color, bool iconMode, bool hasBackgroundColor, Color backgroundColor, bool isSelected)
+    private static void DrawName(Rect selectionRect, string guid, Color color, bool iconMode, bool hasBackgroundColor, Color backgroundColor, bool isSelected, bool hasFocus)
     {
         string folderPath = AssetDatabase.GUIDToAssetPath(guid);
         if (string.IsNullOrEmpty(folderPath))
@@ -548,11 +519,21 @@ internal static class CustomFolderProjectView
         GUIContent labelContent = new GUIContent(labelText);
         Rect labelRect = GetNameRect(selectionRect, labelStyle, labelContent, iconMode);
         Rect coverRect = GetNameCoverRect(selectionRect, labelRect, labelStyle, labelContent, iconMode);
-        DrawNameCover(coverRect, hasBackgroundColor, backgroundColor, isSelected, iconMode);
+        DrawCoverBackground(coverRect, hasBackgroundColor, backgroundColor, isSelected, iconMode, hasFocus);
 
         TextClipping oldClipping = labelStyle.clipping;
         TextAnchor oldAlignment = labelStyle.alignment;
+#if UNITY_6000_0_OR_NEWER
+        labelStyle.clipping = iconMode ? TextClipping.Ellipsis : TextClipping.Clip;
+#else
+        // Older editors crop the string before drawing; they do not expose
+        // TextClipping.Ellipsis.
         labelStyle.clipping = TextClipping.Clip;
+        if (iconMode)
+        {
+            labelContent.text = GetEllipsizedLabel(labelText, labelStyle, labelRect.width - labelStyle.padding.horizontal);
+        }
+#endif
         if (iconMode)
         {
             labelStyle.alignment = TextAnchor.MiddleCenter;
@@ -563,14 +544,50 @@ internal static class CustomFolderProjectView
         labelStyle.alignment = oldAlignment;
     }
 
+#if !UNITY_6000_0_OR_NEWER
+    private static string GetEllipsizedLabel(string text, GUIStyle style, float width)
+    {
+        GUIContent content = new GUIContent(text);
+        if (style.CalcSize(content).x <= width)
+        {
+            return text;
+        }
+
+        int low = 0;
+        int high = text.Length;
+        while (low < high)
+        {
+            int length = (low + high + 1) / 2;
+            content.text = text.Substring(0, length) + "\u2026";
+            if (style.CalcSize(content).x <= width)
+            {
+                low = length;
+            }
+            else
+            {
+                high = length - 1;
+            }
+        }
+
+        if (low > 0 && char.IsHighSurrogate(text[low - 1]))
+        {
+            low--;
+        }
+
+        return text.Substring(0, low) + "\u2026";
+    }
+#endif
+
     private static Rect GetNameRect(Rect selectionRect, GUIStyle labelStyle, GUIContent labelContent, bool iconMode)
     {
         if (iconMode)
         {
+            // Match Unity's constrained measurement, including its label
+            // padding, so long names erase and redraw the same ellipsis area.
             Vector2 size = labelStyle.CalcSize(labelContent);
-            size.x += labelStyle.padding.horizontal;
             size.x = Mathf.Min(size.x, selectionRect.width);
-            size.y = labelStyle.fixedHeight > 0f ? labelStyle.fixedHeight : size.y;
+            size.y = Mathf.Min(size.y, selectionRect.height);
+            size.x += labelStyle.padding.horizontal;
 
             return new Rect(
                 selectionRect.x + (selectionRect.width - size.x) * 0.5f,
@@ -580,7 +597,7 @@ internal static class CustomFolderProjectView
         }
 
         return new Rect(
-            selectionRect.x + labelStyle.margin.left + ListNameHorizontalOffset,
+            selectionRect.x + labelStyle.margin.left,
             selectionRect.y,
             Mathf.Max(1f, selectionRect.width - labelStyle.margin.left),
             selectionRect.height);
@@ -604,11 +621,6 @@ internal static class CustomFolderProjectView
             labelRect.height);
     }
 
-    private static void DrawNameCover(Rect labelRect, bool hasBackgroundColor, Color backgroundColor, bool isSelected, bool iconMode)
-    {
-        DrawCoverBackground(labelRect, hasBackgroundColor, backgroundColor, isSelected, iconMode);
-    }
-
     private static GUIStyle GetListSelectionStyle()
     {
         if (listSelectionStyle == null)
@@ -617,6 +629,16 @@ internal static class CustomFolderProjectView
         }
 
         return listSelectionStyle;
+    }
+
+    private static GUIStyle GetGridSelectionStyle()
+    {
+        if (gridSelectionStyle == null)
+        {
+            gridSelectionStyle = new GUIStyle("ProjectBrowserGridLabel");
+        }
+
+        return gridSelectionStyle;
     }
 
     private static GUIStyle GetNameLabelStyle(bool iconMode)
