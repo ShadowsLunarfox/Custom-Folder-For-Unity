@@ -1,23 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="620" height="38" viewBox="0 0 620 38" role="img" aria-labelledby="title desc">
   <title id="title">Custom Folder project information</title>
   <desc id="desc">Unity Editor. C sharp and IMGUI. Five interface languages. GPL-3.0 license.</desc>
-  <defs>
-    <linearGradient id="surface" x2="0" y2="1">
-      <stop offset="0" stop-color="#252b3b"/>
-      <stop offset="1" stop-color="#191e2c"/>
-    </linearGradient>
-  </defs>
   <g font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="12" font-weight="600" fill="#eef1fa">
-    <rect x="0.5" y="0.5" width="146" height="36" rx="9" fill="url(#surface)" stroke="#5b4381"/>
+    <rect x="0.5" y="0.5" width="146" height="36" rx="6" fill="#1d2230" stroke="#343b4e"/>
     <circle cx="18" cy="19" r="4" fill="#c18cff"/>
     <text x="33" y="23">Unity Editor</text>
-    <rect x="158.5" y="0.5" width="146" height="36" rx="9" fill="url(#surface)" stroke="#285d70"/>
+    <rect x="158.5" y="0.5" width="146" height="36" rx="6" fill="#1d2230" stroke="#343b4e"/>
     <circle cx="176" cy="19" r="4" fill="#4ed8ec"/>
     <text x="191" y="23">C# / IMGUI</text>
-    <rect x="316.5" y="0.5" width="146" height="36" rx="9" fill="url(#surface)" stroke="#305e50"/>
+    <rect x="316.5" y="0.5" width="146" height="36" rx="6" fill="#1d2230" stroke="#343b4e"/>
     <circle cx="334" cy="19" r="4" fill="#6fe3a5"/>
     <text x="349" y="23">5 languages</text>
-    <rect x="474.5" y="0.5" width="145" height="36" rx="9" fill="url(#surface)" stroke="#71602e"/>
+    <rect x="474.5" y="0.5" width="145" height="36" rx="6" fill="#1d2230" stroke="#343b4e"/>
     <circle cx="492" cy="19" r="4" fill="#f7c954"/>
     <text x="507" y="23">GPL-3.0</text>
   </g>
