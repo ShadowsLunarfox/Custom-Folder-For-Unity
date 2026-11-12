@@ -1,177 +1,230 @@
-# Custom Folder for Unity
+<a id="top"></a>
 
-A Unity Editor tool for customizing folders in the Project window. It lets you assign custom colors, backgrounds, name colors, and icons so large Unity projects are easier to browse, organize, and recognize.
+<p align="center">
+  <img src="docs/images/readme-banner.png" alt="Custom Folder for Unity — make every folder stand out" width="100%">
+</p>
 
-This tool runs only inside the Unity Editor. It does not affect runtime scenes, Prefabs, or in-game UI.
+<h1 align="center">Custom Folder for Unity</h1>
 
-## Features
+<p align="center">
+  <strong>A little color. A clearer Project window.</strong><br>
+  Custom folder colors, backgrounds, names, and icons — with quick editing and batch styling.
+</p>
 
-- Set a custom folder icon color.
-- Set an independent background color.
-- Set an independent folder-name color.
-- Use a custom image as a folder icon.
-- Use Unity Editor built-in icons as folder icons.
-- Import PNG, JPG, and JPEG images from your computer.
-- Automatically store imported icons in the plugin `icon` folder.
-- Import multiple images and manage them from the imported icon library.
-- Select multiple imported icons with Shift-click.
-- Select all or clear the current icon selection.
-- Delete selected imported icons in batches.
-- Edit multiple folders at the same time.
-- Apply changes to selected folders or all styled folders.
-- Remove styles from selected folders or all styled folders.
-- Rename folders from the style editor.
-- Use color presets and random folder/background colors.
-- Toggle global display layers:
-  - `Folder Color`: show or hide the folder-color layer.
-  - `Background Color`: show or hide the background-color layer.
-  - `Name Color`: show or hide the name-color layer.
-- Open a quick Alt popup for editing selected folders.
-- Manage all styled folders from a dedicated management window.
-- Search, refresh, select all, and clear selections.
-- Support English, Simplified Chinese, Traditional Chinese, Japanese, and Korean.
-- Support `Auto (Unity/OS)` language detection.
-- Save folder styles and global display settings to `CustomFolderStyles.json`.
+<p align="center">
+  <img src="docs/images/readme-badges.svg" alt="Unity Editor · C# and IMGUI · Five interface languages · GPL-3.0" width="620">
+</p>
 
-## Installation
+<p align="center">
+  <a href="#installation">🚀 Installation</a> &nbsp;·&nbsp;
+  <a href="#features">✨ Features</a> &nbsp;·&nbsp;
+  <a href="#quick-start">⚡ Quick start</a> &nbsp;·&nbsp;
+  <a href="#screenshots">🖼️ Screenshots</a> &nbsp;·&nbsp;
+  <a href="#guides">📖 Guides</a>
+</p>
 
-1. Close Unity, or make sure the project is not currently compiling scripts.
-2. Copy `Assets/Editor/custom folder` into your Unity project's `Assets/Editor/` directory.
-3. Open Unity and wait for the scripts to finish compiling.
-4. Select one or more folders in the Project window.
+---
 
-Unity `2022.3.22f1` or later is recommended. The scripts have been compile-checked with Unity 2022.3.22f1 and Unity 6.0.0f1.
+Give scripts, art, audio, and tools their own visual identity. **Custom Folder** lets you personalize folders directly in Unity's Project window, then manage their appearance from one place.
 
-## Usage
+> [!NOTE]
+> All customization runs inside the Unity Editor. The extension adds no runtime components to your scenes.
 
-### Alt Popup
+<a id="features"></a>
 
-1. Select one or more folders in the Unity Project window.
-2. Move the mouse over a selected folder item.
-3. Hold the `Alt` key.
-4. Edit the folder color, background color, name color, or icon.
-5. Use the color checkboxes to decide which color settings should be applied during this operation.
-6. Custom icons do not have a separate checkbox. Selecting, importing, or removing an icon applies the icon automatically.
-7. Click `OK` to save the changes.
-8. Click `Cancel` to discard the current changes.
-9. Click `Clear` to remove all styles from the selected folders.
+## ✨ Features
 
-### Project Window Context Menu
+| Feature | What you can do |
+| :--- | :--- |
+| 🎨 **Independent colors** | Set folder, background, and name colors separately. Choose presets or randomize folder and background colors. |
+| 🖼️ **Custom icons** | Use Unity Editor built-in icons or import your own PNG, JPG, and JPEG images. |
+| ⚡ **Quick editing** | Open the Alt popup over a selected folder and adjust its appearance in place. |
+| 🗂️ **Batch styling** | Edit multiple selected folders, or apply changes to all styled folders from the manager. |
+| 🎛️ **Display controls** | Show or hide folder, background, and name colors while keeping saved styles. |
+| 🔎 **Style Manager** | Search styled folders, rename folders, and organize imported icons in one window. |
+| 🌐 **Five interface languages** | Choose English, Simplified Chinese, Traditional Chinese, Japanese, Korean, or automatic language detection. |
+| 💾 **Saved styles** | Store colors, icons, and display settings in a project-local JSON file. |
 
-1. Select one or more folders in the Project window.
-2. Right-click and open `Assets/Custom Folder`.
-3. Choose one of the following actions:
-   - `Edit Style...`: open the folder style popup.
-   - `Clear Style`: remove styles from the selected folders.
-   - `Set Color`: apply a preset color.
+<a id="installation"></a>
 
-### Style Manager Window
+## 🚀 Installation
 
-Open the manager from the Unity main menu:
+1. Download or clone this repository.
+2. Copy the repository's **`Editor/custom folder`** directory into your Unity project's **`Assets/Editor/`** directory.
+3. Open Unity and let the scripts finish compiling.
+4. Select a folder in the Project window and follow the [quick start](#quick-start).
 
-```text
-Tools > Custom Folder > Style Manager
-```
-
-The manager window contains the following areas:
-
-- Search bar: search styled folders.
-- `Display Layers`: control the global folder-color, background-color, and name-color layers.
-- `Language`: choose a language or use `Auto (Unity/OS)`.
-- Folder list: browse and multi-select styled folders.
-- Editor panel: edit folder names, colors, backgrounds, name colors, and icons.
-- `Apply Changes to Selected Folders`: apply the current editor values to selected folders.
-- `Apply Changes to All Styled Folders`: apply the current editor values to all styled folders.
-- `Remove Styles from Selected Folders`: remove styles from selected folders.
-- `Remove Styles from All Styled Folders`: remove styles from all styled folders.
-- `Imported Icons`: browse, select, import, and delete managed icons.
-
-### Global Display Layer Menu
-
-The display layers can also be controlled from the Unity main menu:
-
-```text
-Tools > Custom Folder > Display
-```
-
-Unchecking an item immediately hides that drawing layer across the Project window. The saved folder color, background color, name color, and icon data are not deleted. Re-enable the item to show the layer again.
-
-## Icon Import
-
-There are two ways to import icons:
-
-- Click `Import Image...` in the Alt popup or Style Manager and choose an image from your computer.
-- Click `Import Folder...` in the Style Manager to batch-import images from a folder.
-
-Imported images are processed to a Project-window-friendly icon size and stored in:
-
-```text
-Assets/Editor/custom folder/icon
-```
-
-When imported icons are deleted, the plugin also removes saved folder references to those icons so broken paths are not left behind.
-
-## Data Storage
-
-Folder styles are saved in:
-
-```text
-Assets/Editor/custom folder/CustomFolderStyles.json
-```
-
-The file stores:
-
-- Folder GUID, name, and path save points.
-- Folder colors.
-- Background colors.
-- Name colors.
-- Unity built-in icon names or custom icon paths.
-- Global display-layer states.
-
-Add `CustomFolderStyles.json` and the `icon` folder to version control if the styles should be shared with a team.
-
-## Screenshots
-
-### Style Manager Window
-
-<img src="Screenshot 2026-08-12 171345.png" >
-
-### Alt Folder Style Popup
-
-<img src="Screenshot 2026-08-12 171336.png" >
-
-### Customized Folders in the Project Window
-
-<img src="Screenshot 2026-08-12 171321.png" >
-
-<img src="Screenshot 2026-08-12 172514.png" >
-
-## File Structure
+Your Unity project should contain:
 
 ```text
 Assets/
 └── Editor/
     └── custom folder/
-        ├── CustomFolderLocalization.cs
         ├── CustomFolderProjectView.cs
-        ├── CustomFolderSelection.cs
-        ├── CustomFolderStyleDatabase.cs
-        ├── CustomFolderStyleEntry.cs
-        ├── CustomFolderStyleFile.cs
-        ├── CustomFolderStyleManagerWindow.cs
         ├── CustomFolderStylePopup.cs
-        ├── CustomFolderStyles.json
-        └── icon/
+        └── ...
 ```
 
-## Notes
+Keep the installed path as **`Assets/Editor/custom folder`**. The tool uses this location to save styles and imported icons.
 
-- This is a Unity Editor extension and runs only in the Editor.
-- Do not delete `CustomFolderStyles.json` unless you want to remove the saved folder styles.
-- When a folder is moved or renamed, the plugin uses its Unity GUID to update the saved folder name and path.
-- Click `Refresh` in the Style Manager if the Project window does not update immediately.
-- The Alt popup may close temporarily while Unity recompiles scripts because of Unity's domain reload behavior.
+<details>
+<summary><strong>Unity version information</strong></summary>
 
-## License
+Unity **2022.3.22f1 or later** is recommended. Script compilation has been checked against:
 
-GPL-3.0 license
+| Editor version | Validation |
+| :--- | :--- |
+| Unity `2022.3.22f1` | Compilation passed |
+| Unity `6000.0.77f1` (Unity 6) | Compilation passed |
+
+These checks validate compilation. Visual behavior still needs verification inside the Editor.
+
+</details>
+
+<a id="quick-start"></a>
+
+## ⚡ Quick start
+
+1. **Select** one or more folders in the Project window.
+2. **Hover** the pointer over a selected folder and press <kbd>Alt</kbd>.
+3. **Customize** its folder color, background, name color, or icon.
+4. Click **OK** to save your changes.
+
+| Popup action | Result |
+| :--- | :--- |
+| **OK** | Save the changes. |
+| **Cancel** | Discard the current edits. |
+| **Clear** | Remove all styles from the selected folders. |
+
+The color checkboxes choose which color settings to apply. Selecting, importing, or removing an icon applies the icon automatically.
+
+**Prefer a menu?** Right-click a selected folder and open **Assets → Custom Folder → Edit Style...**
+
+<a id="screenshots"></a>
+
+## 🖼️ In the Editor
+
+### Project window
+
+Colors and custom icons appear in the Project window's grid and folder tree.
+
+![Custom folder colors, backgrounds, and icons in Unity's Project window grid](<Screenshot 2026-08-12 171321.png>)
+
+<details>
+<summary><strong>View the Alt popup and folder tree</strong></summary>
+
+<table>
+  <tr>
+    <th align="left">Quick style editing</th>
+    <th align="left">Folder tree</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Screenshot%202026-08-12%20171336.png" alt="Alt popup with folder, background, and name color controls and custom icon import" width="373"></td>
+    <td valign="top"><img src="Screenshot%202026-08-12%20172514.png" alt="Styled folders and colored names in Unity's Project window tree" width="179"></td>
+  </tr>
+</table>
+
+</details>
+
+### Style Manager
+
+Browse styled folders, control display layers, and manage imported icons.
+
+![Custom Folder Style Manager showing styled folders, display layers, and imported icons](<Screenshot 2026-08-12 171345.png>)
+
+<a id="guides"></a>
+
+## 📖 Guides
+
+<details>
+<summary><strong>🎛️ Manage styles and display layers</strong></summary>
+
+Open **Tools → Custom Folder → Style Manager**.
+
+| Area | Available actions |
+| :--- | :--- |
+| **Folder list** | Search, refresh, select all, clear selections, or select multiple styled folders. |
+| **Editor panel** | Rename folders and edit colors, backgrounds, name colors, and icons. |
+| **Apply changes** | Update selected folders or all styled folders. |
+| **Remove styles** | Clear styles from selected folders or all styled folders. |
+| **Imported Icons** | Import images, select icons, and delete selected imports. |
+| **Language** | Choose an interface language or **Auto (Unity/OS)**. |
+
+The **Display Layers** controls toggle `Folder Color`, `Background Color`, and `Name Color`. These switches preserve your saved styles.
+
+The same switches are available from **Tools → Custom Folder → Display**.
+
+</details>
+
+<details>
+<summary><strong>🖼️ Import and organize icons</strong></summary>
+
+- Choose **Import Image...** in the Alt popup or Style Manager to import PNG, JPG, or JPEG files.
+- Choose **Import Folder...** in the Style Manager to import multiple images from a directory.
+- Use <kbd>Shift</kbd> + click to select multiple imported icons.
+- Use **Select All**, **Clear Selection**, and **Delete Selected** to manage the library.
+
+Imported images are processed for the Project window and stored in:
+
+```text
+Assets/Editor/custom folder/icon/
+```
+
+Deleting imported icons also clears their saved folder references.
+
+</details>
+
+<details>
+<summary><strong>💾 Save and share folder styles</strong></summary>
+
+Styles are saved in:
+
+```text
+Assets/Editor/custom folder/CustomFolderStyles.json
+```
+
+The file stores folder GUIDs, folder names and paths, colors, icon references, and global display settings. Folder moves and renames use Unity's GUIDs to keep the saved style associated with the folder.
+
+To share styles with your team, commit **`CustomFolderStyles.json`**, the **`icon/`** directory, and Unity's corresponding **`.meta`** files to version control.
+
+Keep the JSON file when updating the extension to retain your customizations.
+
+</details>
+
+<details>
+<summary><strong>🧩 Repository layout</strong></summary>
+
+```text
+Editor/custom folder/       Unity Editor extension scripts
+docs/images/                README banner and badges
+docs/marketing/             Promotional banner and captions
+README.md                   Setup and usage
+LICENSE                     GPL-3.0 license
+```
+
+The repository's `Editor/custom folder` directory is copied into your Unity project's `Assets/Editor/` directory during installation. Style data and imported icons are stored in the Unity project after use.
+
+</details>
+
+<a id="notes"></a>
+
+## 💡 Editor notes
+
+- Click **Refresh** in the Style Manager if the Project window needs updating.
+- Unity's script recompilation can close the Alt popup during a domain reload.
+- Use **Assets → Custom Folder → Set Color** for quick color presets, or **Clear Style** to reset selected folders.
+
+<a id="resources"></a>
+
+## 🔗 Resources
+
+- [Promotional banner and ready-to-post captions](docs/marketing/README.md)
+- [Report an issue](https://github.com/ShadowsLunarfox/Custom-Folder-For-Unity/issues)
+- [GPL-3.0 license](LICENSE)
+
+---
+
+<p align="center">
+  <strong>Make your project easier to recognize, one folder at a time.</strong><br>
+  <a href="#top">↑ Back to top</a>
+</p>
